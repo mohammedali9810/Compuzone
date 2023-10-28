@@ -1,0 +1,19 @@
+.card{
+    height: 40rem;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10%;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+.card img{
+    height: 40rem;
+    width: 40rem;
+}
+.card-body{
+    height: 60%;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+}

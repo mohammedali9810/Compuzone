@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content%}
+<link rel="stylesheet" href="{{url_for('static', filename='/css/editpost.css')}}">
+<div class="editpage">
+  <div class="card" style="width: 40rem;">
+  <img src={{post.get_image_url}} class="card-img-top" alt="...">
+ <div class="card-body">
+    <h2 class="card-title">{{post.name}}</h2>
+    <p class="card-text">{{post.body}}</p>
+  </div>
+        </div>
+     <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="postname" class="form-label">Post Name</label>
+            <input value={{post.name}} type="text" class="form-control" id="postname" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+        </div>
+        <div class="mb-3">
+            <label for="desc" class="form-label">Description</label>
+            <textarea class="form-control" id="desc" name="desc" rows="4" required>{{post.desc}}</textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Edit Post</button>
+        <a href="/post/{{post.id}}/delete" class="btn btn-danger">Delete</a>
+        <a href="/" class="btn btn-warning">Cancel</a>
+    </form>
+
+</div>
+
+{% endblock%}

@@ -1,0 +1,13 @@
+
+.cardsgrid{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    row-gap: 2rem;
+    margin-top: 2rem;
+}
+.card {
+    max-height: 30rem;
+}
+.card img{
+    height: 20rem;
+}

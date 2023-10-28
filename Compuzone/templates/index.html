@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/home.css')}}">
+<div class="container mt-4 fw-bold">
+    <div class="cardsgrid">
+
+{% for post in posts %}
+<div class="card" style="width: 20rem;">
+  <img src={{post.get_image_url}} class="card-img-top" alt="...">
+  <div class="card-body">
+    <h2 class="card-title">{{post.name}}</h2>
+    <p class="card-subtitle">{{post.desc}}</p>
+      {% if post.category %}
+      <p class="card-text">Category: {{ post.get_category_name() }}</p>
+      {% else %}
+      <p class="card-text">Category: No category</p>
+      {% endif %}
+    <a href="/post/{{post.id}}" class="btn btn-primary">Show</a>
+      <a href="/edpos/{{post.id}}" class="btn btn-warning">Edit</a>
+      <a href="/post/{{post.id}}/delete" class="btn btn-danger">Delete</a>
+  </div>
+</div>
+{%endfor%}
+
+    </div>
+</div>
+
+{% endblock%}
