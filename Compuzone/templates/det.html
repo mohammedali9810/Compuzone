@@ -1,13 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
-<link rel="stylesheet" href="{{url_for('static', filename='/css/postdetails.css')}}">
-  <div class="card" style="width: 80rem;">
-  <img src={{post.get_image_url}} class="card-img-top" alt="...">
- <div class="card-body">
-    <h2 class="card-title">{{post.name}}</h2>
-    <p class="card-text">{{post.desc}}</p>
-      <a href="/edpos/{{post.id}}" class="btn btn-warning">Edit</a>
-      <a href="/post/{{post.id}}/delete" class="btn btn-danger">Delete</a>
-  </div>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/postdetails.css') }}">
+    <div class="card" style="width: 80rem;">
+        <img src={{post.get_image_url}} class="card-img-top" alt="...">
+        <div class="card-body">
+            <h2 class="card-title">{{post.name}}</h2>
+            <p class="card-text">{{post.desc}}</p>
+            {% if post.category %}
+                <a href="{{ url_for('compos.posts_by_category', category_id=post.category) }}">
+                    <p class="card-text">Category: {{ post.get_category_name() }}</p>
+                </a>
+            {% endif %}
+            <a href="/edpos/{{post.id}}" class="btn btn-warning">Edit</a>
+            <a href="/post/{{post.id}}/delete" class="btn btn-danger">Delete</a>
         </div>
-{% endblock%}
+    </div>
+{% endblock %}

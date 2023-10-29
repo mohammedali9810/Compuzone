@@ -34,8 +34,11 @@ def create_post():
 
 @compos_blueprint.route('/post/<int:id>')
 def showpost(id):
-    pos_comps = Pos_Mod.query.get_or_404(id)
-    return render_template('det.html', post=pos_comps)
+    pos_comps = Pos_Mod.query.get_or_404(id) # Assuming there is a one-to-many relationship
+    category = pos_comps.category
+    return render_template('det.html', post=pos_comps, category=category)
+
+
 
 @compos_blueprint.route('/post/<int:id>/delete')
 def deletepost(id):
@@ -53,8 +56,9 @@ def deletepost(id):
 @compos_blueprint.route('/edpos/<int:id>', methods=['POST', 'GET'])
 def edpos(id):
     pos_comps = Pos_Mod.query.get_or_404(id)
-    categories = Categ.get_all_categories()
+    categs = Categ.get_all_categories()
     img_dir = os.path.join('static', 'images', 'pim')
+    old_category = pos_comps.category
     if request.method == 'POST':
         if 'image' in request.files and request.files['image']:
             image = request.files['image']
@@ -69,11 +73,17 @@ def edpos(id):
 
         pos_comps.name = request.form['name']
         pos_comps.desc = request.form['desc']
+        category_id = request.form.get('category')
+        if category_id and category_id.isdigit():
+            pos_comps.category = int(category_id)
+        else:
+            pos_comps.category = old_category
+
         db.session.commit()
 
         return redirect(url_for('compos.all'))
 
-    return render_template('edpos.html', post=pos_comps,categories=Categ.get_all_categories())
+    return render_template('edpos.html', post=pos_comps,categories=categs)
 
 
 def generate_filename(filename):
@@ -98,3 +108,9 @@ def search_in_posts(search_term):
     results = list(set(results_by_name + results_by_category))
 
     return results
+
+@compos_blueprint.route('/category/<int:category_id>/posts')
+def posts_by_category(category_id):
+    category = Categ.query.get_or_404(category_id)
+    posts_in_category = Pos_Mod.query.filter_by(category=category.id).all()
+    return render_template('allcatpos.html', category=category, posts=posts_in_category)

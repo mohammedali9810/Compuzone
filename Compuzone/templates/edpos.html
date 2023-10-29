@@ -25,7 +25,9 @@
         <div class="mb-3">
             <label for="category" class="form-label">Category</label>
             <select class="form-control" id="category" name="category">
+             {% if post.category %}
              <option value="{{ post.category.id }}" selected>{{ post.get_category_name() }}</option>
+             {% endif %}
              {% for category in categories %}
              {% if category !=  post.get_category_name()%}
              <option value="{{ category.id }}">{{ category.name }}</option>
