@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for,request
 from Pos import compos_blueprint
 from Compuzone import db
-from Compuzone.models import Pos_Mod
+from Compuzone.models import Pos_Mod, Categ
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
@@ -53,7 +53,8 @@ def deletepost(id):
 @compos_blueprint.route('/edpos/<int:id>', methods=['POST', 'GET'])
 def edpos(id):
     pos_comps = Pos_Mod.query.get_or_404(id)
-    img_dir = 'static', 'images', 'pim'
+    categories = Categ.get_all_categories()
+    img_dir = os.path.join('static', 'images', 'pim')
     if request.method == 'POST':
         if 'image' in request.files and request.files['image']:
             image = request.files['image']
@@ -72,7 +73,7 @@ def edpos(id):
 
         return redirect(url_for('compos.all'))
 
-    return render_template('edpos.html', post=pos_comps)
+    return render_template('edpos.html', post=pos_comps,categories=Categ.get_all_categories())
 
 
 def generate_filename(filename):
@@ -81,3 +82,19 @@ def generate_filename(filename):
     _, extension = os.path.splitext(filename)
     new_filename = f"{timestamp}_{random_uuid}{extension}"
     return new_filename
+
+@compos_blueprint.route('/search', methods=['GET', 'POST'])
+def search_posts():
+    if request.method == 'POST':
+        search_term = request.form['search_term']
+        results = search_in_posts(search_term)
+        return render_template('seares.html', results=results, search_term=search_term)
+
+    return render_template('index.html')
+
+def search_in_posts(search_term):
+    results_by_name = Pos_Mod.query.filter(Pos_Mod.name.ilike(f"%{search_term}%")).all()
+    results_by_category = Pos_Mod.query.join(Categ).filter(Categ.name.ilike(f"%{search_term}%")).all()
+    results = list(set(results_by_name + results_by_category))
+
+    return results

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <h3>Search Results for "{{ search_term }}"</h3>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for result in results %}
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{{ result.get_image_url }}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ result.name }}</h2>
+                            <p class="card-subtitle">{{ result.desc }}</p>
+                            {% if result.category %}
+                                <p class="card-text">Category: {{ result.get_category_name() }}</p>
+                            {% else %}
+                                <p class="card-text">Category: No category</p>
+                            {% endif %}
+                            <a href="{{ url_for('compos.showpost', id=result.id) }}" class="btn btn-primary">Show</a>
+                            <a href="{{ url_for('compos.edpos', id=result.id) }}" class="btn btn-warning">Edit</a>
+                            <a href="{{ url_for('compos.deletepost', id=result.id) }}" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
