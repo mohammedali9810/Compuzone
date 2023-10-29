@@ -16,11 +16,22 @@
         </div>
         <div class="mb-3">
             <label for="image" class="form-label">Image</label>
-            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*">
         </div>
         <div class="mb-3">
             <label for="desc" class="form-label">Description</label>
-            <textarea class="form-control" id="desc" name="desc" rows="4" required>{{post.desc}}</textarea>
+            <textarea class="form-control" id="desc" name="desc" rows="4">{{post.desc}}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-control" id="category" name="category">
+             <option value="{{ post.category.id }}" selected>{{ post.get_category_name() }}</option>
+             {% for category in categories %}
+             {% if category !=  post.get_category_name()%}
+             <option value="{{ category.id }}">{{ category.name }}</option>
+             {% endif %}
+             {% endfor %}
+            </select>
         </div>
         <button type="submit" class="btn btn-success">Edit Post</button>
         <a href="/post/{{post.id}}/delete" class="btn btn-danger">Delete</a>

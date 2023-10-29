@@ -23,7 +23,9 @@ def create_post():
     if request.method == 'POST':
         image = request.files['image']
         imageurl = generate_filename(secure_filename(image.filename))
-        image.save(os.path.join('static/images/pim', imageurl))
+        # upload_folder = os.path.join(os.getcwd(), 'static', 'images', 'pim')
+        # print("Absolute Path:", os.path.join(upload_folder, image.filename))
+        image.save(os.path.join('static', 'images', 'pim', imageurl))
         post = Pos_Mod(name=request.form['name'], desc=request.form['desc'], image=imageurl)
         db.session.add(post)
         db.session.commit()
@@ -44,23 +46,33 @@ def deletepost(id):
     db.session.commit()
     return redirect((url_for('index')))
 
+
+
+
+
 @compos_blueprint.route('/edpos/<int:id>', methods=['POST', 'GET'])
 def edpos(id):
     pos_comps = Pos_Mod.query.get_or_404(id)
+    img_dir = 'static', 'images', 'pim'
     if request.method == 'POST':
-        if request.files['image']:
+        if 'image' in request.files and request.files['image']:
             image = request.files['image']
-            pre_imageurl = pos_comps.image
-            os.remove(os.path.join('static/images/pim', pre_imageurl))
-            imageurl = generate_filename(secure_filename(image.filename))
-            image.save(os.path.join('static/images/pim', imageurl))
 
-        pos_comps.image = image.filename
+            old_image_path = os.path.join(img_dir, pos_comps.image)
+            if os.path.exists(old_image_path):
+                os.remove(old_image_path)
+
+            imageurl = generate_filename(secure_filename(image.filename))
+            image.save(os.path.join(img_dir, imageurl))
+            pos_comps.image = imageurl
+
         pos_comps.name = request.form['name']
         pos_comps.desc = request.form['desc']
         db.session.commit()
-        return redirect((url_for('compos.all')))
-    return render_template('edpos.html',post=pos_comps)
+
+        return redirect(url_for('compos.all'))
+
+    return render_template('edpos.html', post=pos_comps)
 
 
 def generate_filename(filename):

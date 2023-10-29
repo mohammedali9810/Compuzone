@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 def cr_app(mode='dev'):
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = AppConfig[mode]
-    app.config[' UPLOAD_FOLDER'] = AppConfig[mode]
+    app.config['UPLOAD_FOLDER'] = AppConfig[mode]
     app.config.from_object(AppConfig[mode])
 
     db.init_app(app)
