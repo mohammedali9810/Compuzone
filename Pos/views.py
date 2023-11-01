@@ -47,7 +47,7 @@ def deletepost(id):
     os.remove(os.path.join('static/images/pim', imageurl))
     db.session.delete(pos_comps)
     db.session.commit()
-    return redirect((url_for('index')))
+    return redirect((url_for('compos.all')))
 
 
 
