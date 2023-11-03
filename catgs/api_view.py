@@ -1,6 +1,8 @@
 from flask_restful import marshal_with, Resource,fields
 from flask_restful.reqparse import RequestParser
 from Compuzone.models import db, Categ
+import requests
+import json
 # from flask_restx import Api, Resource, fields
 
 
@@ -55,7 +57,11 @@ from Compuzone.models import db, Categ
 #         return "deleted"
 #
 
-
+# url = "http://127.0.0.1:5000/"
+# data = {"name": "category_name", "description": "category_description"}
+#
+# headers = {"Content-Type": "application/json"}
+# response = requests.post(url, data=json.dumps(data), headers=headers)
 
 
 

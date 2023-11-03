@@ -20,8 +20,8 @@ def cr_app(mode='dev'):
     app.register_blueprint(catgs_blueprint)
     api = Api(app)
     api.add_resource(Compapi, "/api/allpos")
-    api.add_resource(Compdat, "/api/compos/<int:id>")
-    api.add_resource(Categlis, "/api/categlis")
+    api.add_resource(Compdat, "/api/allpos/<int:id>")
+    api.add_resource(Categlis, "/api/categ")
     api.add_resource(CategDat, "/api/categ/<int:id>")
     # api.init_app(app, version='1.0', title='Your API', description='API documentation', doc='/swagger')
 

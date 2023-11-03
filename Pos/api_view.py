@@ -4,18 +4,11 @@ from flask_restful.reqparse import RequestParser
 from Compuzone.models import db
 from werkzeug.datastructures import FileStorage
 from flask import request
+import json
+
 
 import os
 from werkzeug.utils import secure_filename
-
-# def save_uploaded_file(file):
-#     if file:
-#         filename = secure_filename(file.filename)
-#         upload_folder = 'static/images/pim'
-#         os.makedirs(upload_folder, exist_ok=True)
-#         file_path = os.path.join(upload_folder, filename)
-#         file.save(file_path)
-#         return f'/static/images/pim/{filename}'
 
 compos_serializer = {
     "id": fields.Integer,
@@ -58,17 +51,16 @@ class Compapi(Resource):
 
     @marshal_with(compos_serializer)
     def post(self):
-        postargs = CompParser.parse_args()
-        image_file = postargs['image']
-
-        # Save the image file to the destination folder
+        raw_data = request.data.decode('utf-8')
+        postargs = json.loads(raw_data)
+        image_file = postargs.get('image')
         image_url = save_uploaded_file(image_file)
 
         comps = Pos_Mod(
-            name=postargs['name'],
+            name=postargs.get('name'),
             image=image_url,
-            desc=postargs['desc'],
-            category=postargs['category']
+            desc=postargs.get('desc'),
+            category=postargs.get('category')
         )
 
         db.session.add(comps)
@@ -81,10 +73,18 @@ class Compdat(Resource):
     def put(self, id):
         compos = Pos_Mod.query.get_or_404(id)
         postargs = CompParser.parse_args()
+
+        if 'image' in request.files:
+            # If a new image is provided, save it and update the image URL
+            new_image = request.files['image']
+            new_image_url = save_uploaded_file(new_image)
+            compos.image = new_image_url
+
+        # Update other fields
         compos.name = postargs['name']
-        compos.image = postargs['image']
         compos.desc = postargs['desc']
         compos.category = postargs['category']
+
         db.session.commit()
         return compos
 
